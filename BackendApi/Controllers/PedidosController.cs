@@ -6,7 +6,7 @@ namespace BackendApi.Controllers;
 [Route("api/[controller]")] // Define la ruta de la API -> api/Pedidos
 public class PedidosController : ControllerBase // Proporciona funciones de respuesta (Ok(), NotFound(), BadRequest())
 {
-    [HttpGet] // Indica que el método responderá a solicitudes GET
+    [HttpGet] 
     public IActionResult ObtenerPedidos()
     {
         var pedidos = new[]
