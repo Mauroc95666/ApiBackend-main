@@ -1,72 +1,94 @@
-using Microsoft.AspNetCore.Mvc; //Permite utilizar controladores, rutas y respuestas Http
-
+using Microsoft.AspNetCore.Mvc; //Permite utlizar controladores,rutas y respuestas Http
+using BackendApi.Models;
 namespace BackendApi.Controllers;
 
-[ApiController] //Indica que la clase funcionara como un controlador de una API
-[Route("api/[controller]")] //Define la ruta de la API -> api/Producto
-public class ProductoController : ControllerBase // Proporciona funciones de respuesta (Ok(), NotFound(), BadRequest())
+[ApiController] //Inidica que la clase funcionara como un controlador de una API
+[Route("api/[controller]")] //Define la ruta de una API
+public class ProductosController : ControllerBase // Proporciona funciones de respuesta (Ok(), NotFound(), Badrequest())
 {
-    // Productos de la Panaderia Kiataque
+    // Lista en memoria: guarda los productos mientras la aplicacion este corriendo.
+    // Es "static" para que la misma lista se comparta entre todas las peticiones.
+    private static List<Producto> productos = new List<Producto>
+    {
+        new Producto { Id = 1, Nombre = "Marraqueta", Precio = 0.50m, Categoria = "Pan", Stock = 200 },
+        new Producto { Id = 2, Nombre = "Cuñape", Precio = 2.00m, Categoria = "Horneado", Stock = 80 },
+        new Producto { Id = 3, Nombre = "Empanada de queso", Precio = 3.50m, Categoria = "Salado", Stock = 60 }
+    };
+
+    // Lleva el control del siguiente Id a asignar cuando se registra un producto nuevo.
+    private static int siguienteId = 4;
+
     [HttpGet] //Indica que el metodo respondera a solicitudes GET
     public IActionResult ObtenerProductos()
     {
-        var productos = new[]
-        {
-            new
-            {
-                Id = 1,
-                Nombre = "Marraqueta",
-                Descripcion = "Pan crujiente horneado cada manana",
-                Precio = 0.50,
-                Stock = 200
-            },
-            new
-            {
-                Id = 2,
-                Nombre = "Cuernito de mantequilla",
-                Descripcion = "Cuernito hojaldrado con mantequilla",
-                Precio = 3.00,
-                Stock = 80
-            },
-            new
-            {
-                Id = 3,
-                Nombre = "Empanada de queso",
-                Descripcion = "Empanada rellena de queso fundido",
-                Precio = 5.00,
-                Stock = 60
-            },
-            new
-            {
-                Id = 4,
-                Nombre = "Torta de chocolate",
-                Descripcion = "Porcion de torta humeda de chocolate",
-                Precio = 12.00,
-                Stock = 25
-            },
-            new
-            {
-                Id = 5,
-                Nombre = "Cateto de la Panaderia Kiataque",
-                Descripcion = "Pan de campo tradicional de la casa",
-                Precio = 8.00,
-                Stock = 40
-            }
-        };
         return Ok(productos);
     }
 
-    [HttpGet("{id}")] //Responde a GET api/Producto/{id}
+    [HttpGet("{id}")]
     public IActionResult ObtenerProductoPorId(int id)
     {
-        var producto = new
+        // Busca en la lista el producto con ese Id
+        var producto = productos.FirstOrDefault(p => p.Id == id);
+        if (producto == null)
         {
-            Id = id,
-            Nombre = "Producto Ejemplo",
-            Descripcion = "Producto de la Panaderia Kiataque",
-            Precio = 10.00,
-            Stock = 50
-        };
+            return NotFound(new { mensaje = $"No se encontro el producto {id}" });
+        }
         return Ok(producto);
+    }
+
+    [HttpPost]
+    public IActionResult RegistrarProducto([FromBody] Producto producto)//FromBody significa tomar la informacion que llega en formato JSON
+    {
+        // Le asignamos un Id nuevo y lo agregamos a la lista
+        producto.Id = siguienteId;
+        siguienteId++;
+        productos.Add(producto);
+
+        return Ok(new
+        {
+            mensaje = "Producto registrado correctamente",
+            producto
+        });
+    }
+
+    [HttpPut("{id}")]
+    public IActionResult ActualizarProducto(int id, [FromBody] Producto producto)
+    {
+        // Buscamos el producto existente para modificarlo
+        var existente = productos.FirstOrDefault(p => p.Id == id);
+        if (existente == null)
+        {
+            return NotFound(new { mensaje = $"No se encontro el producto {id}" });
+        }
+
+        // Actualizamos sus datos con lo que llego en el JSON
+        existente.Nombre = producto.Nombre;
+        existente.Precio = producto.Precio;
+        existente.Categoria = producto.Categoria;
+        existente.Stock = producto.Stock;
+
+        return Ok(new
+        {
+            mensaje = "Producto actualizado",
+            producto = existente
+        });
+    }
+
+    [HttpDelete("{id}")]
+    public IActionResult EliminarProducto(int id)
+    {
+        // Buscamos y quitamos el producto de la lista
+        var producto = productos.FirstOrDefault(p => p.Id == id);
+        if (producto == null)
+        {
+            return NotFound(new { mensaje = $"No se encontro el producto {id}" });
+        }
+
+        productos.Remove(producto);
+
+        return Ok(new
+        {
+            mensaje = $"Producto {id} eliminado correctamente"
+        });
     }
 }
