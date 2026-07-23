@@ -1,4 +1,3 @@
----
 
 ## 🧪 Pruebas de Funcionamiento de la API Backend
 
