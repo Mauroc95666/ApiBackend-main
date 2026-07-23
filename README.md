@@ -1,6 +1,6 @@
 ## 🧪 Pruebas de Funcionamiento API Backend (CRUD Proveedores)
 
-El backend en **.NET 7 Web API** (`BackendApi`) expone operaciones RESTful documentadas mediante **Swagger UI**. A continuación, se presentan las evidencias del ciclo de vida completo (CRUD) probado sobre la API:
+El backend en **.NET 7 Web API** (`BackendApi`) expone operaciones RESTful documentadas mediante **Swagger UI**. A continuación, se presentan las evidencias del ciclo de vida completo (CRUD) probado sobre el controlador de Proveedores:
 
 ### 📸 Evidencias de Operaciones HTTP
 
@@ -10,8 +10,8 @@ El backend en **.NET 7 Web API** (`BackendApi`) expone operaciones RESTful docum
     <td align="center" width="50%"><b>02. POST — Registrar Nuevo Proveedor</b></td>
   </tr>
   <tr>
-    <td><img src="docs/backend/Captura%20de%20pantalla%202026-07-22%20101548_3.png" alt="GET Proveedores Listado" width="100%"/></td>
-    <td><img src="docs/backend/Captura%20de%20pantalla%202026-07-22%20101800_3.png" alt="POST Crear Proveedor" width="100%"/></td>
+    <td><img src="BackendApi/img/kiataque/Captura%20de%20pantalla%202026-07-22%20101548.png" alt="GET Proveedores Listado" width="100%"/></td>
+    <td><img src="BackendApi/img/kiataque/Captura%20de%20pantalla%202026-07-22%20101800.png" alt="POST Crear Proveedor" width="100%"/></td>
   </tr>
   <tr>
     <td>Respuesta exitosa <code>200 OK</code> retornando el listado general en formato JSON.</td>
@@ -22,8 +22,8 @@ El backend en **.NET 7 Web API** (`BackendApi`) expone operaciones RESTful docum
     <td align="center" width="50%"><b>04. PUT — Actualizar Datos de Proveedor</b></td>
   </tr>
   <tr>
-    <td><img src="docs/backend/Captura%20de%20pantalla%202026-07-22%20101944_3.png" alt="GET Proveedor por ID" width="100%"/></td>
-    <td><img src="docs/backend/Captura%20de%20pantalla%202026-07-22%20102101_3.png" alt="PUT Actualizar Proveedor" width="100%"/></td>
+    <td><img src="BackendApi/img/kiataque/Captura%20de%20pantalla%202026-07-22%20101944.png" alt="GET Proveedor por ID" width="100%"/></td>
+    <td><img src="BackendApi/img/kiataque/Captura%20de%20pantalla%202026-07-22%20102101.png" alt="PUT Actualizar Proveedor" width="100%"/></td>
   </tr>
   <tr>
     <td>Consulta directa <code>200 OK</code> especificando el identificador único (ID 5).</td>
@@ -34,8 +34,8 @@ El backend en **.NET 7 Web API** (`BackendApi`) expone operaciones RESTful docum
     <td align="center" width="50%"><b>06. DELETE — Eliminar Registro</b></td>
   </tr>
   <tr>
-    <td><img src="docs/backend/Captura%20de%20pantalla%202026-07-22%20102121_3.png" alt="GET Validar Edicion" width="100%"/></td>
-    <td><img src="docs/backend/Captura%20de%20pantalla%202026-07-22%20102146_3.png" alt="DELETE Proveedor" width="100%"/></td>
+    <td><img src="BackendApi/img/kiataque/Captura%20de%20pantalla%202026-07-22%20102121.png" alt="GET Validar Edicion" width="100%"/></td>
+    <td><img src="BackendApi/img/kiataque/Captura%20de%20pantalla%202026-07-22%20102146.png" alt="DELETE Proveedor" width="100%"/></td>
   </tr>
   <tr>
     <td>Verificación <code>200 OK</code> confirmando los cambios realizados en el payload.</td>
@@ -50,7 +50,7 @@ El backend en **.NET 7 Web API** (`BackendApi`) expone operaciones RESTful docum
     <td align="center" width="100%"><b>07. GET por ID — Confirmación de Registro Inexistente</b></td>
   </tr>
   <tr>
-    <td><img src="docs/backend/Captura%20de%20pantalla%202026-07-22%20102202_3.png" alt="GET 404 Not Found" width="100%"/></td>
+    <td><img src="BackendApi/img/kiataque/Captura%20de%20pantalla%202026-07-22%20102202.png" alt="GET 404 Not Found" width="100%"/></td>
   </tr>
   <tr>
     <td align="center">Respuesta controlada <code>404 Not Found</code> confirmando que el recurso ya no existe en el sistema.</td>
