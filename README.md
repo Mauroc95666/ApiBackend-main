@@ -1,3 +1,55 @@
+Aquí tienes la documentación formateada con las rutas de imágenes exactas de la carpeta portillo y los datos de las capturas de pantalla de Productos (ID 8, "pan frances de chocolate", "frances con vainilla", etc.):
+
+Markdown
+## 🧪 Pruebas de Funcionamiento API Backend (CRUD Productos)
+
+El backend en **.NET 7 Web API** (`BackendApi`) expone operaciones RESTful documentadas mediante **Swagger UI**. A continuación, se presentan las evidencias del ciclo de vida completo (CRUD) probado sobre el controlador de Productos:
+
+### 📸 Evidencias de Operaciones HTTP
+
+<table>
+  <tr>
+    <td align="center" width="50%"><b>01. POST — Registrar Nuevo Producto</b></td>
+    <td align="center" width="50%"><b>02. GET por ID — Consultar Registro Creado</b></td>
+  </tr>
+  <tr>
+    <td><img src="BackendApi/img/portillo/WhatsApp%20Image%202026-07-22%20at%2010.15.08.jpeg" alt="POST Crear Producto" width="100%"/></td>
+    <td><img src="BackendApi/img/portillo/WhatsApp%20Image%202026-07-22%20at%2010.15.08%20(1).jpeg" alt="GET Producto por ID" width="100%"/></td>
+  </tr>
+  <tr>
+    <td>Creación exitosa <code>200 OK</code> agregando el producto "pan frances de chocolate" (ID 8).</td>
+    <td>Consulta directa <code>200 OK</code> especificando el identificador único (ID 8).</td>
+  </tr>
+  <tr>
+    <td align="center" width="50%"><b>03. PUT — Actualizar Datos de Producto</b></td>
+    <td align="center" width="50%"><b>04. DELETE — Eliminar Registro</b></td>
+  </tr>
+  <tr>
+    <td><img src="BackendApi/img/portillo/WhatsApp%20Image%202026-07-22%20at%2010.15.08%20(2).jpeg" alt="PUT Actualizar Producto" width="100%"/></td>
+    <td><img src="BackendApi/img/portillo/WhatsApp%20Image%202026-07-22%20at%2010.15.08%20(3).jpeg" alt="DELETE Producto" width="100%"/></td>
+  </tr>
+  <tr>
+    <td>Modificación exitosa <code>200 OK</code> actualizando a "frances con vainilla".</td>
+    <td>Eliminación exitosa <code>200 OK</code> confirmando "Producto 8 eliminado correctamente".</td>
+  </tr>
+</table>
+
+#### 🔍 Verificación de Eliminación (Validación de Error 404)
+
+<table>
+  <tr>
+    <td align="center" width="100%"><b>05. GET por ID — Confirmación de Registro Inexistente</b></td>
+  </tr>
+  <tr>
+    <td><img src="BackendApi/img/portillo/WhatsApp%20Image%202026-07-22%20at%2010.15.08%20(4).jpeg" alt="GET 404 Not Found" width="100%"/></td>
+  </tr>
+  <tr>
+    <td align="center">Respuesta controlada <code>404 Not Found</code> confirmando que el producto 8 ya no existe en el sistema.</td>
+  </tr>
+</table>
+
+---
+
 ## 🧪 Pruebas de Funcionamiento API Backend (CRUD Pedidos)
 
 El backend en **.NET 7 Web API** (`BackendApi`) expone operaciones RESTful documentadas mediante **Swagger UI**. A continuación, se presentan las evidencias del ciclo de vida completo (CRUD) probado sobre el controlador de Pedidos:
