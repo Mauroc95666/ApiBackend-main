@@ -1,6 +1,3 @@
-Aquí tienes las secciones para continuar tu `README.md` de GitHub, manteniendo exactamente la misma estructura, estética con emojis, tablas responsivas y formato Markdown técnico:
-
-```markdown
 ---
 
 ## 🧪 Pruebas de Funcionamiento de la API Backend
@@ -75,5 +72,3 @@ El backend se encuentra estructurado bajo la plataforma .NET utilizando el patr�
   * `ProveedoresController`: Registro y administración de suministros.
 * **Middleware y Documentación:**
   * Implementación de **Swashbuckle.AspNetCore** para la generación interactiva de Swagger UI.
-
-```
