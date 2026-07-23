@@ -8,9 +8,9 @@ Este repositorio contiene la plataforma web desarrollada con **Vue 3** y **Vite*
 
 | Integrante | Rol / Responsabilidad | GitHub |
 | :--- | :--- | :--- |
-| **Anderson Carvajal Romero** | Diseño de Interfaces & Frontend | [@anderson-carvajal](https://github.com) |
-| **Marco Antonio Kiataque Uchiba** | Diseño de Interfaces & Frontend | [@antoniokiataque](https://github.com) |
-| **Luis Portillo Gonzales** | Diseño de Interfaces & Frontend | [@luis-portillo](https://github.com) |
+| **Anderson Carvajal Romero** | Diseño de Interfaces & Frontend | [AndersonCarvajal](https://github.com/AndersonCarvajal) |
+| **Marco Antonio Kiataque Uchima** | Diseño de Interfaces & Frontend | [MarcoKiataque27](https://github.com/MarcoKiataque27) |
+| **Luis Gerardo Portillo Gonzales** | Diseño de Interfaces & Frontend | [Mauroc95666](https://github.com/Mauroc95666) |
 
 ---
 
