@@ -1,60 +1,59 @@
+## 🧪 Pruebas de Funcionamiento API Backend (CRUD Proveedores)
 
-## 🧪 Pruebas de Funcionamiento de la API Backend
+El backend en **.NET 7 Web API** (`BackendApi`) expone operaciones RESTful documentadas mediante **Swagger UI**. A continuación, se presentan las evidencias del ciclo de vida completo (CRUD) probado sobre la API:
 
-El proyecto integra un backend desarrollado en **.NET 7 Web API** (`BackendApi`) documentado dinámicamente mediante **Swagger UI**. A continuación, se detallan las evidencias del correcto funcionamiento de las peticiones HTTP y la consola del servidor:
-
-### 📸 Evidencias de Ejecución y Endpoints
+### 📸 Evidencias de Operaciones HTTP
 
 <table>
   <tr>
-    <td align="center" width="50%"><b>01. Proveedores (GET / POST)</b></td>
-    <td align="center" width="50%"><b>02. Módulo de Pedidos</b></td>
+    <td align="center" width="50%"><b>01. GET — Listar Todos los Proveedores</b></td>
+    <td align="center" width="50%"><b>02. POST — Registrar Nuevo Proveedor</b></td>
   </tr>
   <tr>
-    <td><img src="docs/backend/01_Prueba_Proveedores_GET_POST.png" alt="Respuesta JSON Proveedores" width="100%"/></td>
-    <td><img src="docs/backend/02_Endpoint_Pedidos_Respuesta.png" alt="Listado de Pedidos" width="100%"/></td>
+    <td><img src="docs/backend/Captura%20de%20pantalla%202026-07-22%20101548_3.png" alt="GET Proveedores Listado" width="100%"/></td>
+    <td><img src="docs/backend/Captura%20de%20pantalla%202026-07-22%20101800_3.png" alt="POST Crear Proveedor" width="100%"/></td>
   </tr>
   <tr>
-    <td>Respuesta estructurada en formato JSON para la gestión de proveedores.</td>
-    <td>Consulta y retorno de datos desde el controlador de Pedidos.</td>
+    <td>Respuesta exitosa <code>200 OK</code> retornando el listado general en formato JSON.</td>
+    <td>Creación exitosa <code>201 Created</code> agregando al proveedor ID 5.</td>
   </tr>
   <tr>
-    <td align="center" width="50%"><b>03. Detalle de Productos</b></td>
-    <td align="center" width="50%"><b>04. Módulo de Clientes</b></td>
+    <td align="center" width="50%"><b>03. GET por ID — Consultar Registro Creado</b></td>
+    <td align="center" width="50%"><b>04. PUT — Actualizar Datos de Proveedor</b></td>
   </tr>
   <tr>
-    <td><img src="docs/backend/03_Prueba_Productos_Detalle.png" alt="Respuesta JSON Productos" width="100%"/></td>
-    <td><img src="docs/backend/04_Modulo_Clientes_Consultas.png" alt="Interfaz Clientes" width="100%"/></td>
+    <td><img src="docs/backend/Captura%20de%20pantalla%202026-07-22%20101944_3.png" alt="GET Proveedor por ID" width="100%"/></td>
+    <td><img src="docs/backend/Captura%20de%20pantalla%202026-07-22%20102101_3.png" alt="PUT Actualizar Proveedor" width="100%"/></td>
   </tr>
   <tr>
-    <td>Verificación de endpoint para obtención de stock y catálogo de productos.</td>
-    <td>Registros cargados y validación del módulo de clientes.</td>
+    <td>Consulta directa <code>200 OK</code> especificando el identificador único (ID 5).</td>
+    <td>Modificación <code>204 No Content</code> actualizando nombre y rubro comercial.</td>
   </tr>
   <tr>
-    <td align="center" width="50%"><b>05. Confirmación HTTP Status 200</b></td>
-    <td align="center" width="50%"><b>06. Consola del Servidor Backend</b></td>
+    <td align="center" width="50%"><b>05. GET por ID — Validar Edición</b></td>
+    <td align="center" width="50%"><b>06. DELETE — Eliminar Registro</b></td>
   </tr>
   <tr>
-    <td><img src="docs/backend/05_Peticion_HTTP_Exitosa.png" alt="Petición HTTP Exitosa" width="100%"/></td>
-    <td><img src="docs/backend/06_Consola_Servidor_Ejecucion.png" alt="Estado del Servidor" width="100%"/></td>
+    <td><img src="docs/backend/Captura%20de%20pantalla%202026-07-22%20102121_3.png" alt="GET Validar Edicion" width="100%"/></td>
+    <td><img src="docs/backend/Captura%20de%20pantalla%202026-07-22%20102146_3.png" alt="DELETE Proveedor" width="100%"/></td>
   </tr>
   <tr>
-    <td>Confirmación de peticiones exitosas (Status Code 200 OK).</td>
-    <td>Servidor local en ejecución escuchando peticiones en tiempo real.</td>
+    <td>Verificación <code>200 OK</code> confirmando los cambios realizados en el payload.</td>
+    <td>Eliminación exitosa <code>204 No Content</code> del proveedor ID 5.</td>
   </tr>
 </table>
 
-#### 🌐 Vista General de Documentación Swagger
+#### 🔍 Verificación de Eliminación (Validación de Error 404)
 
 <table>
   <tr>
-    <td align="center" width="100%"><b>07. Swagger UI — Endpoints Expuestos</b></td>
+    <td align="center" width="100%"><b>07. GET por ID — Confirmación de Registro Inexistente</b></td>
   </tr>
   <tr>
-    <td><img src="docs/backend/07_Listado_General_Swagger_UI.png" alt="Swagger UI General" width="100%"/></td>
+    <td><img src="docs/backend/Captura%20de%20pantalla%202026-07-22%20102202_3.png" alt="GET 404 Not Found" width="100%"/></td>
   </tr>
   <tr>
-    <td align="center">Panel interactivo de Open API / Swagger documentando los controladores RESTful del sistema.</td>
+    <td align="center">Respuesta controlada <code>404 Not Found</code> confirmando que el recurso ya no existe en el sistema.</td>
   </tr>
 </table>
 
@@ -62,12 +61,10 @@ El proyecto integra un backend desarrollado en **.NET 7 Web API** (`BackendApi`)
 
 ## ⚙️ Arquitectura del Backend
 
-El backend se encuentra estructurado bajo la plataforma .NET utilizando el patrón Controller-Service:
+El backend está desarrollado bajo la plataforma .NET utilizando arquitectura en capas y controladores RESTful:
 
-* **Controladores Implementados:**
-  * `ClientesController`: Operaciones para el registro y consulta de clientes.
-  * `PedidosController`: Gestión de solicitudes y deliveries.
-  * `ProductoController`: Control de inventario y catálogo.
-  * `ProveedoresController`: Registro y administración de suministros.
+* **Controladores e Integración:**
+  * `ProveedoresController`: Gestión de proveedores (`GET`, `POST`, `PUT`, `DELETE`).
+  * `ClientesController`, `PedidosController`, `ProductoController`: Gestión operativa integral.
 * **Middleware y Documentación:**
-  * Implementación de **Swashbuckle.AspNetCore** para la generación interactiva de Swagger UI.
+  * **Swagger / OpenAPI** mediante `Swashbuckle.AspNetCore` para consumo dinámico de endpoints.
