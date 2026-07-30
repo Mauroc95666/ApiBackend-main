@@ -168,10 +168,10 @@ const configs = computed(() => ({
     titulo: 'Emprendimientos',
     subtitulo: 'Empresa / negocio',
     endpoint: '/emprendimientos',
-    nuevoModelo: () => ({ nombre: '', niT_RUC: '', direccion: '', telefono: '', email: '' }),
+    nuevoModelo: () => ({ nombre: '', nIT_RUC: '', direccion: '', telefono: '', email: '' }),
     campos: [
       { campo: 'nombre', etiqueta: 'Nombre', tipo: 'text', requerido: true },
-      { campo: 'niT_RUC', etiqueta: 'NIT / RUC', tipo: 'text' },
+      { campo: 'nIT_RUC', etiqueta: 'NIT / RUC', tipo: 'text' },
       { campo: 'direccion', etiqueta: 'Dirección', tipo: 'text' },
       { campo: 'telefono', etiqueta: 'Teléfono', tipo: 'text' },
       { campo: 'email', etiqueta: 'Email', tipo: 'text' },
@@ -229,7 +229,7 @@ onMounted(cargarReferencias);
     <!-- Contenido -->
     <div class="contenido">
       <header class="topbar">
-        <input class="buscar-top" placeholder="Buscar..." />
+        <div class="titulo-top">{{ configActual ? configActual.titulo : 'Panadería Kiataque' }}</div>
         <div class="fila derecha-top">
           <button class="btn btn-linea btn-mini" @click="modulo = 'ventas'">+ Venta</button>
           <button class="btn btn-linea btn-mini" @click="store.cerrarSesion()">Cerrar sesión</button>
@@ -377,7 +377,7 @@ onMounted(cargarReferencias);
   align-items: center;
 }
 
-.buscar-top { max-width: 320px; }
+.titulo-top { font-weight: 700; color: var(--cafe-oscuro); font-size: 16px; }
 
 .derecha-top {
   align-items: center;

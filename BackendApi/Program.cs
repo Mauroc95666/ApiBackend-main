@@ -18,8 +18,9 @@ builder.Services.AddCors(options =>
 // 1. Agregar servicios al contenedor
 // SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true evita que
 // .NET marque como obligatorias las propiedades de navegación (Cliente, Sucursal,
-// Emprendimiento, etc.). Así el frontend puede crear registros mandando solo los
-// ids (ClienteId, SucursalId...) sin que la API los rechace con error 400.
+// Emprendimiento, etc.). Así el frontend puede crear registros (Ventas, Pedidos,
+// Inventario, Sucursales, Categorías, Clientes, Usuarios) mandando solo los ids
+// (ClienteId, SucursalId...) sin que la API los rechace con error 400.
 builder.Services.AddControllers(options =>
 {
     options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
@@ -42,7 +43,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// app.UseHttpsRedirection(); <-- COMPARA O COMENTA ESTA LÍNEA PARA EVITAR FORZAR HTTPS EN HTTP LOCAL
+// app.UseHttpsRedirection(); <-- COMENTADA PARA EVITAR FORZAR HTTPS EN HTTP LOCAL
 
 app.UseCors(corsPolicyName);
 app.UseAuthorization();
