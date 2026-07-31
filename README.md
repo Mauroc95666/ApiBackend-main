@@ -37,6 +37,37 @@ La Panadería Kiataque gestiona actualmente sus operaciones de forma manual: los
 
 **Nuestra solución:** El sistema propuesto centraliza productos, ventas, pedidos, inventario, clientes y reportes en una sola plataforma web, permitiendo que la panadería compita en condiciones equivalentes a las de empresas de mayor tamaño.
 
+## ⚙️ Funcionalidad de la Página y Módulos del Sistema
+
+El sistema está estructurado en dos entornos operativos principales según el tipo de usuario: un **Panel de Administración** interno y una **Tienda en Línea** interactiva para los clientes.
+
+### 1. Módulo de Autenticación y Seguridad (RF-01)
+* **Inicio de Sesión:** Permite a los usuarios acceder al sistema mediante correo electrónico y contraseña. El sistema valida el rol (SuperAdmin, Administrador, Cajero, Vendedor, Inventario o Cliente) para redirigir a la interfaz correspondiente.
+* **Control de Acceso:** Restringe las operaciones administrativas críticas exclusivamente al personal autorizado.
+
+### 2. Panel de Control / Dashboard (RF-08)
+* **Resumen General:** Visualización en tiempo real de las métricas clave del negocio, incluyendo ventas del día, productos en catálogo, pedidos pendientes y alertas de stock crítico.
+* **Gráficos Estadísticos:** Presenta un reporte gráfico del comportamiento de ventas durante la semana.
+
+### 3. Gestión de Productos y Categorías (RF-02)
+* **Catálogo Visual:** Interfaz basada en tarjetas informativas con imagen, nombre, categoría, precio en bolivianos (Bs) y stock actual.
+* **Operaciones CRUD:** Permite al administrador crear, editar y eliminar productos o categorías de manera dinámica.
+* **Filtros de Búsqueda:** Clasificación rápida de la vitrina en secciones como panes, salados, dulces y bebidas.
+
+### 4. Punto de Venta y Registro de Ventas (RF-03)
+* **Selección Dinámica:** Permite al operador agregar productos al detalle de la venta con un solo clic.
+* **Gestión de Transacciones:** Asignación de clientes (incluyendo "Consumidor final") y selección del método de pago (*Efectivo*, *QR* o *Tarjeta*).
+* **Actualización Automática:** Calcula subtotales y el monto total en tiempo real, registrando la operación en la base de datos.
+
+### 5. Módulo de Pedidos y Tienda del Cliente (RF-06, RF-07)
+* **Vitrina en Línea:** Permite a los clientes explorar el catálogo de productos disponibles sin necesidad de credenciales administrativas.
+* **Carrito de Compras:** Gestión interactiva de cantidades bajo la sección "Mi pedido".
+* **Modalidad de Entrega:** Opción para elegir entre el retiro directo en sucursal o el envío por delivery.
+
+### 6. Control de Inventario y Almacén (RF-05)
+* **Monitoreo de Stock:** Seguimiento continuo de las existencias de productos y materiales.
+* **Alertas Tempranas:** Avisos visuales automáticos cuando un artículo alcanza el stock mínimo establecido para prevenir desabastecimientos.
+
 ---
 
 ## 🎨 Diseño de Interfaces
@@ -395,7 +426,7 @@ El servidor de desarrollo de Vite estará disponible en \http://localhost:5173\.
 
 ### 3. Comunicación entre Frontend y Backend
 
-Con ambos proyectos en ejecución, el frontend consume los endpoints de la API a través de la instancia centralizada de Axios configurada en \src/api/axios.js\, cuya URL base apunta a \https://localhost:7000/api\. La polótica de CORS habilitada en \BackendApi/Program.cs\ permite los or�genes \http://localhost:5173\ y \http://localhost:8080\.
+Con ambos proyectos en ejecución, el frontend consume los endpoints de la API a través de la instancia centralizada de Axios configurada en \src/api/axios.js\, cuya URL base apunta a \https://localhost:7000/api\. La polótica de CORS habilitada en \BackendApi/Program.cs\ permite los orígenes \http://localhost:5173\ y \http://localhost:8080\.
 
 ### Requisitos previos
 
@@ -412,10 +443,10 @@ El proyecto está dividido en dos proyectos independientes que se comunican a tr
 - **BackendApi** (.NET 7 Web API): Expone endpoints REST documentados con Swagger. Acceso a base de datos mediante Entity Framework Core y SQL Server.
 - **FrontendVue** (Vue 3 + Vite): Interfaz de usuario que consume los endpoints del backend mediante Axios. El router y los componentes gestionan el estado de la aplicación del lado del cliente.
 
-### Comunicaci�n entre Frontend y Backend
+### Comunicación entre Frontend y Backend
 
 1. **Instancia centralizada de Axios** (FrontendVue/src/api/axios.js): Configura la URL base (https://localhost:7000/api) y los headers Content-Type: application/json. Todos los componentes importan esta instancia para realizar peticiones HTTP, garantizando consistencia en la configuración.
-2. **Polótica de CORS** (BackendApi/Program.cs): Registra y aplica una polótica de CORS que permite los orígenes http://localhost:5173 y http://localhost:8080 (puertos de desarrollo de Vite), con AllowAnyHeader y AllowAnyMethod. La llamada a pp.UseCors() se posiciona antes de pp.UseAuthorization() para que las solicitudes pasen la validación de CORS antes de la autorización.
+2. **Polótica de CORS** (BackendApi/Program.cs): Registra y aplica una polótica de CORS que permite los orígenes http://localhost:5173 y http://localhost:8080 (puertos de desarrollo de Vite), con AllowAnyHeader y AllowAnyMethod. La llamada a App.UseCors() se posiciona antes de pp.UseAuthorization() para que las solicitudes pasen la validación de CORS antes de la autorización.
 3. **Flujo de datos**: El frontend realiza peticiones GET, POST y DELETE a los endpoints /api/[recurso]. El backend procesa las solicitudes, interactua con la base de datos mediante EF Core, y responde con datos JSON.
 
 ## 🔌 Endpoints Disponibles
