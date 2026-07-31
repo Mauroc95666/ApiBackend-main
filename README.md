@@ -379,11 +379,11 @@ cd BackendApi
 dotnet run
 ```
 
-La API estar� disponible en \https://localhost:7000\ con Swagger UI accesible en \https://localhost:7000/swagger\.
+La API estará disponible en \https://localhost:7000\ con Swagger UI accesible en \https://localhost:7000/swagger\.
 
 ### 2. Levantar el Frontend (Vue.js + Vite)
 
-Desde la ra�z del repositorio, ejecuta:
+Desde la raíz del repositorio, ejecuta:
 
 ```sh
 cd FrontendVue
@@ -391,11 +391,11 @@ npm install
 npm run dev
 ```
 
-El servidor de desarrollo de Vite estar� disponible en \http://localhost:5173\.
+El servidor de desarrollo de Vite estará disponible en \http://localhost:5173\.
 
-### 3. Comunicaci�n entre Frontend y Backend
+### 3. Comunicación entre Frontend y Backend
 
-Con ambos proyectos en ejecuci�n, el frontend consume los endpoints de la API a trav�s de la instancia centralizada de Axios configurada en \src/api/axios.js\, cuya URL base apunta a \https://localhost:7000/api\. La pol�tica de CORS habilitada en \BackendApi/Program.cs\ permite los or�genes \http://localhost:5173\ y \http://localhost:8080\.
+Con ambos proyectos en ejecución, el frontend consume los endpoints de la API a través de la instancia centralizada de Axios configurada en \src/api/axios.js\, cuya URL base apunta a \https://localhost:7000/api\. La polótica de CORS habilitada en \BackendApi/Program.cs\ permite los or�genes \http://localhost:5173\ y \http://localhost:8080\.
 
 ### Requisitos previos
 
@@ -407,71 +407,25 @@ Con ambos proyectos en ejecuci�n, el frontend consume los endpoints de la API 
 
 ## 📐 Arquitectura de la Solución
 
-El proyecto est� dividido en dos proyectos independientes que se comunican a trav�s de una API RESTful sobre HTTP/HTTPS:
+El proyecto está dividido en dos proyectos independientes que se comunican a través de una API RESTful sobre HTTP/HTTPS:
 
 - **BackendApi** (.NET 7 Web API): Expone endpoints REST documentados con Swagger. Acceso a base de datos mediante Entity Framework Core y SQL Server.
-- **FrontendVue** (Vue 3 + Vite): Interfaz de usuario que consume los endpoints del backend mediante Axios. El router y los componentes gestionan el estado de la aplicaci�n del lado del cliente.
+- **FrontendVue** (Vue 3 + Vite): Interfaz de usuario que consume los endpoints del backend mediante Axios. El router y los componentes gestionan el estado de la aplicación del lado del cliente.
 
 ### Comunicaci�n entre Frontend y Backend
 
-1. **Instancia centralizada de Axios** (FrontendVue/src/api/axios.js): Configura la URL base (https://localhost:7000/api) y los headers Content-Type: application/json. Todos los componentes importan esta instancia para realizar peticiones HTTP, garantizando consistencia en la configuraci�n.
-2. **Pol�tica de CORS** (BackendApi/Program.cs): Registra y aplica una pol�tica de CORS que permite los or�genes http://localhost:5173 y http://localhost:8080 (puertos de desarrollo de Vite), con AllowAnyHeader y AllowAnyMethod. La llamada a pp.UseCors() se posiciona antes de pp.UseAuthorization() para que las solicitudes pasen la validaci�n de CORS antes de la autorizaci�n.
-3. **Flujo de datos**: El frontend realiza peticiones GET, POST y DELETE a los endpoints /api/[recurso]. El backend procesa las solicitudes, interact�a con la base de datos mediante EF Core, y responde con datos JSON.
+1. **Instancia centralizada de Axios** (FrontendVue/src/api/axios.js): Configura la URL base (https://localhost:7000/api) y los headers Content-Type: application/json. Todos los componentes importan esta instancia para realizar peticiones HTTP, garantizando consistencia en la configuración.
+2. **Polótica de CORS** (BackendApi/Program.cs): Registra y aplica una polótica de CORS que permite los orígenes http://localhost:5173 y http://localhost:8080 (puertos de desarrollo de Vite), con AllowAnyHeader y AllowAnyMethod. La llamada a pp.UseCors() se posiciona antes de pp.UseAuthorization() para que las solicitudes pasen la validación de CORS antes de la autorización.
+3. **Flujo de datos**: El frontend realiza peticiones GET, POST y DELETE a los endpoints /api/[recurso]. El backend procesa las solicitudes, interactua con la base de datos mediante EF Core, y responde con datos JSON.
 
 ## 🔌 Endpoints Disponibles
 
 ### Productos
 
-| M�todo | Endpoint | Descripci�n | Cuerpo de peticaci�n |
+| Método | Endpoint | Descripción | Cuerpo de peticación |
 |:---|:---|:---|:---|
 | GET | /api/productos | Listar todos los productos | — |
 | POST | /api/productos | Crear un nuevo producto | { nombre, precio, stock, emprendimientoId, categoriaId, proveedorId? } |
 | DELETE | /api/productos/{id} | Eliminar un producto por ID | — |
 
 La lista completa de controladores disponibles en el backend incluye: Productos, Pedidos, Proveedores, Clientes, Ventas, Inventarios, Categorias, Ciudades, Empleados, Usuarios, Roles, Permisos, Sucursales, Dashboard, Configuraciones, Notificaciones, Reportes, Resenas, MovimientosInventario, MetodosPago y Promociones.
-
-## 🔧 Soluci�n de Problemas Comunes
-
-### Error de certificados SSL al conectar por HTTPS en desarrollo
-
-Al usar https://localhost:7000 en desarrollo, el navegador o Axios pueden rechazar el certificado SSL autoadministrado por .NET.
-
-**Soluciones:**
-- **En el navegador**: Aceptar el certificado exception en la p�gina de advertencia (Chrome: tipo 	hisisunsafe en la p�gina de error).
-- **En el proyecto .NET**: Confiar en el certificado de desarrollo con dotnet dev-certs https --trust.
-- **Alternativa temporal**: Cambiar la aseURL de Axios a http://localhost:5000/api (HTTP sin SSL) si el certificado es un bloqueo frecuente.
-
-### Error CORS (No-Access-Control-Allow-Origin)
-
-Si el navegador bloquea las peticiones del frontend al backend con un error CORS:
-- Verificar que pp.UseCors(corsPolicyName) est� posicionado antes de pp.UseAuthorization() en Program.cs.
-- Confirmar que el puerto del frontend (5173 u 8080) est� incluido en WithOrigins().
-
-### Error despu�s de clonar el repositorio (npm install da errores)
-
-- Ejecutar 
-pm install dentro de FrontendVue/ para instalar todas las dependencias.
-- Si el problema persiste, eliminar 
-ode_modules y package-lock.json y ejecutar 
-pm install nuevamente.
-- Asegurarse de tener Node.js v22.18.0 o superior instalado.
-
-### El frontend no puede conectar con el backend
-
-- Verificar que ambos proyectos est�n en ejecuci�n simult�neamente.
-- Confirmar que la aseURL en xios.js coincide con el puerto en el que escucha la API (https://localhost:7000/api).
-- Abrir Swagger (https://localhost:7000/swagger) para probar los endpoints directamente y descartar errores del backend.
-
-### Error 500 en POST /api/productos: OUTPUT clause con triggers SQL Server
-
-Si al registrar un producto desde el formulario el backend devuelve Error 500 y en la consola aparece:
-```
-The target table 'Producto' of the DML statement cannot have any enabled triggers if the statement contains an OUTPUT clause without INTO clause
-```
-
-**Causa:** EF Core usa una cl�usula OUTPUT INSERTED.[Id] en las inserciones para obtener el identificador generado autom�ticamente. SQL Server proh�be esta cl�usula cuando la tabla destino tiene un trigger habilitado.
-
-**Soluci�n aplicada:**
-- El ProductosController.Post ahora usa SQL en bruto (ExecuteSqlInterpolatedAsync) en lugar del DbContext.ChangeTracker, generando un INSERT sin cl�usula OUTPUT.
-- Despu�s de la inserci�n, se ejecuta SELECT CAST(SCOPE_IDENTITY() AS int) por conexi�n RAW para obtener el nuevo Id generado sin usar OUTPUT.
-- EmprendimientoId y CategoriaId son ahora opcionales (int?) en el modelo para permitir registros sin FK previa.
