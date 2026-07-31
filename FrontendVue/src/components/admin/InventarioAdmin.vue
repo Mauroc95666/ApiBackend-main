@@ -94,13 +94,23 @@ function abrirEditar(i) {
 }
 
 async function guardar() {
-  guardando.value = true;
   error.value = '';
+  const stockActual = Number(form.value.stockActual);
+  const stockMinimo = Number(form.value.stockMinimo);
+  if (!form.value.productoId || !form.value.sucursalId) {
+    error.value = 'Elegí el producto y la sucursal.';
+    return;
+  }
+  if (isNaN(stockActual) || stockActual < 0 || isNaN(stockMinimo) || stockMinimo < 0) {
+    error.value = 'El stock actual y el mínimo tienen que ser números mayores o iguales a 0.';
+    return;
+  }
+  guardando.value = true;
   try {
     const cuerpo = {
       ...form.value,
-      stockActual: Number(form.value.stockActual),
-      stockMinimo: Number(form.value.stockMinimo),
+      stockActual,
+      stockMinimo,
     };
     if (editandoId.value) {
       await api.put('/inventarios/' + editandoId.value, cuerpo);
@@ -136,9 +146,18 @@ function abrirMovimiento(tipo) {
 
 // La entrada suma stock y la salida lo resta (se actualiza el StockActual).
 async function registrarMovimiento() {
+  error.value = '';
   const inv = inventarios.value.find((x) => x.id === mov.value.inventarioId);
-  if (!inv) return;
+  if (!inv) {
+    error.value = 'Elegí un ítem del inventario.';
+    return;
+  }
   const cant = Number(mov.value.cantidad);
+  // La cantidad tiene que ser un número entero mayor a 0 (nada de vacío ni negativos).
+  if (isNaN(cant) || cant <= 0) {
+    error.value = 'La cantidad tiene que ser un número mayor a 0.';
+    return;
+  }
   const nuevoStock =
     mov.value.tipo === 'ENTRADA' ? inv.stockActual + cant : inv.stockActual - cant;
   if (nuevoStock < 0) {

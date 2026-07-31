@@ -27,5 +27,10 @@ namespace BackendApi.Models
 
         [Column("Stock")]
         public int? Stock { get; set; }
+
+        // URL de la imagen del producto. Se carga en producción (pegando el
+        // enlace de la foto en el panel), sin tener que tocar el código.
+        [Column("ImagenUrl")]
+        public string? ImagenUrl { get; set; }
     }
 }

@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import api from '@/api/axios';
-import { store, rolEsAdmin } from '@/store';
+import { store, rolEsAdmin, rolEsStaff } from '@/store';
 
 const correo = ref('');
 const clave = ref('');
@@ -50,9 +50,13 @@ async function iniciarSesion() {
     }
 
     if (rolEsAdmin(nombreRol)) {
-      store.entrarComoAdmin(u);
+      // Administrador / gerente: ve el panel completo.
+      store.entrarComoAdmin(u, nombreRol);
+    } else if (rolEsStaff(nombreRol)) {
+      // Personal interno (cajero, inventario, vendedor): panel limitado a su rol.
+      store.entrarComoStaff(u, nombreRol);
     } else {
-      // Usuario normal: lo mandamos a la tienda.
+      // Usuario sin rol de panel: lo mandamos a la tienda.
       store.usuario = u;
       store.entrarComoCliente();
     }

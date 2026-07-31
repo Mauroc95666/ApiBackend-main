@@ -22,10 +22,14 @@ const paso = ref('lista');
 const guardando = ref(false);
 const nroPedido = ref(null);
 
-// Datos que llena el cliente (aunque sea anónimo)
+// Datos de la "cuenta" que el cliente crea para poder comprar.
+// Aunque entre como anónimo, para confirmar la compra tiene que dejar
+// su nombre y su dirección (y opcionalmente teléfono y correo).
 const datos = ref({
   nombre: '',
   telefono: '',
+  email: '',
+  direccion: '',
   sucursalId: null,
   tipoEntrega: 'RETIRO', // RETIRO o DELIVERY
 });
@@ -109,6 +113,15 @@ async function confirmarPedido() {
     error.value = 'Tu carrito está vacío.';
     return;
   }
+  // Para comprar hay que "crear la cuenta": nombre y dirección son obligatorios.
+  if (!(datos.value.nombre || '').trim()) {
+    error.value = 'Escribí tu nombre para crear tu cuenta.';
+    return;
+  }
+  if (!(datos.value.direccion || '').trim()) {
+    error.value = 'Escribí tu dirección para poder registrar la compra.';
+    return;
+  }
   if (!datos.value.sucursalId) {
     error.value = 'Elegí una sucursal.';
     return;
@@ -136,7 +149,8 @@ async function confirmarPedido() {
         nombre: nombreCliente,
         cI_NIT: null,
         telefono: datos.value.telefono || null,
-        email: null,
+        email: (datos.value.email || '').trim() || null,
+        direccion: (datos.value.direccion || '').trim() || null,
       });
       clienteId = rc.data?.id;
     } catch {
@@ -181,6 +195,8 @@ function nuevoPedido() {
   carrito.value = [];
   datos.value.nombre = '';
   datos.value.telefono = '';
+  datos.value.email = '';
+  datos.value.direccion = '';
   datos.value.tipoEntrega = 'RETIRO';
   paso.value = 'lista';
   nroPedido.value = null;
@@ -240,7 +256,10 @@ onMounted(cargarTodo);
 
         <div class="grilla">
           <div v-for="p in productosFiltrados" :key="p.id" class="prod">
-            <div class="prod-foto">Foto del producto</div>
+            <div class="prod-foto">
+              <img v-if="p.imagenUrl" :src="p.imagenUrl" :alt="p.nombre" class="img-prod" />
+              <span v-else>Foto del producto</span>
+            </div>
             <div class="prod-info">
               <h3>{{ p.nombre }}</h3>
               <div class="gris chico">{{ nombreCategoria(p.categoriaId) }}</div>
@@ -284,13 +303,24 @@ onMounted(cargarTodo);
         <template v-else-if="paso === 'datos'">
           <p v-if="error" class="mensaje-error">{{ error }}</p>
 
+          <p class="gris chico" style="margin-bottom:10px">
+            Para confirmar tu pedido creá tu cuenta con tus datos.
+          </p>
           <div class="campo-t">
-            <label>Tu nombre</label>
-            <input v-model="datos.nombre" placeholder="Consumidor final" />
+            <label>Tu nombre *</label>
+            <input v-model="datos.nombre" placeholder="Nombre y apellido" />
+          </div>
+          <div class="campo-t">
+            <label>Dirección *</label>
+            <input v-model="datos.direccion" placeholder="Ej: Av. Siempre Viva #123, zona Norte" />
           </div>
           <div class="campo-t">
             <label>Teléfono (opcional)</label>
             <input v-model="datos.telefono" placeholder="700-00000" />
+          </div>
+          <div class="campo-t">
+            <label>Correo (opcional)</label>
+            <input v-model="datos.email" placeholder="tucorreo@mail.com" />
           </div>
           <div class="campo-t">
             <label>Sucursal</label>
@@ -386,7 +416,8 @@ onMounted(cargarTodo);
 
 .grilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 18px; }
 .prod { background: #fff; border: 1px solid var(--linea); border-radius: 10px; overflow: hidden; box-shadow: var(--sombra); }
-.prod-foto { height: 150px; background: var(--crema-2); display: flex; align-items: center; justify-content: center; color: #c2a888; font-size: 13px; }
+.prod-foto { height: 150px; background: var(--crema-2); display: flex; align-items: center; justify-content: center; color: #c2a888; font-size: 13px; overflow: hidden; }
+.img-prod { width: 100%; height: 100%; object-fit: cover; }
 .prod-info { padding: 14px; }
 .prod-info h3 { font-size: 16px; margin-bottom: 2px; }
 .prod-precio { color: var(--caramelo); font-size: 20px; font-weight: 700; margin: 6px 0 2px 0; }

@@ -26,5 +26,9 @@ namespace BackendApi.Models
 
         [Column("Email")]
         public string? Email { get; set; }
+
+        // Dirección del cliente (para el delivery / registro de la compra).
+        [Column("Direccion")]
+        public string? Direccion { get; set; }
     }
 }

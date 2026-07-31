@@ -52,8 +52,8 @@ public class ProductosController : ControllerBase
         try
         {
             await _context.Database.ExecuteSqlInterpolatedAsync(
-                $@"INSERT INTO [Producto] ([Nombre], [Precio], [Stock], [EmprendimientoId], [CategoriaId], [ProveedorId])
-                   VALUES ({producto.Nombre}, {producto.Precio}, {producto.Stock}, {producto.EmprendimientoId}, {producto.CategoriaId}, {producto.ProveedorId})");
+                $@"INSERT INTO [Producto] ([Nombre], [Precio], [Stock], [EmprendimientoId], [CategoriaId], [ProveedorId], [ImagenUrl])
+                   VALUES ({producto.Nombre}, {producto.Precio}, {producto.Stock}, {producto.EmprendimientoId}, {producto.CategoriaId}, {producto.ProveedorId}, {producto.ImagenUrl})");
 
             var connection = _context.Database.GetDbConnection();
             var wasOpen = connection.State == System.Data.ConnectionState.Open;
@@ -95,6 +95,7 @@ public class ProductosController : ControllerBase
         existente.EmprendimientoId = producto.EmprendimientoId;
         existente.CategoriaId = producto.CategoriaId;
         existente.ProveedorId = producto.ProveedorId;
+        existente.ImagenUrl = producto.ImagenUrl;
 
         await _context.SaveChangesAsync();
 

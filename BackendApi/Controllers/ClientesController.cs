@@ -58,6 +58,7 @@ public class ClientesController : ControllerBase
         cliente.CI_NIT = clienteActualizado.CI_NIT;
         cliente.Telefono = clienteActualizado.Telefono;
         cliente.Email = clienteActualizado.Email;
+        cliente.Direccion = clienteActualizado.Direccion;
 
         await _context.SaveChangesAsync();
 

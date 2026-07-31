@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import api from '@/api/axios';
-import { store } from '@/store';
+import { store, accesoDeRol } from '@/store';
 
 import Dashboard from './admin/Dashboard.vue';
 import ProductosAdmin from './admin/ProductosAdmin.vue';
@@ -34,8 +34,19 @@ const opCiudades = computed(() => ciudades.value.map((x) => ({ valor: x.id, text
 const opEmpren = computed(() => emprendimientos.value.map((x) => ({ valor: x.id, texto: x.nombre })));
 const empDefecto = computed(() => emprendimientos.value[0]?.id ?? 1);
 
+// Que modulos puede ver este usuario segun su rol.
+// '*' significa todos (administrador). Si no, es una lista de claves.
+const acceso = computed(() => accesoDeRol(store.rolNombre));
+
+// true si el usuario puede ver ese modulo del menu.
+function puedeVer(clave) {
+  const a = acceso.value;
+  if (a === '*') return true;
+  return a.includes(clave);
+}
+
 // Menu lateral organizado por secciones
-const menu = [
+const menuCompleto = [
   {
     seccion: 'Principal',
     items: [
@@ -66,6 +77,13 @@ const menu = [
     ],
   },
 ];
+
+// Menu ya filtrado: solo las secciones e items que el rol puede ver.
+const menu = computed(() =>
+  menuCompleto
+    .map((s) => ({ ...s, items: s.items.filter((it) => puedeVer(it.clave)) }))
+    .filter((s) => s.items.length > 0)
+);
 
 // Configuracion del CRUD generico por modulo.
 // Cada campo: { campo, etiqueta, tipo, opciones, requerido, ocultarEnTabla }
@@ -98,12 +116,13 @@ const configs = computed(() => ({
     titulo: 'Clientes',
     subtitulo: 'Clientes registrados',
     endpoint: '/clientes',
-    nuevoModelo: () => ({ nombre: '', cI_NIT: '', telefono: '', email: '', emprendimientoId: empDefecto.value }),
+    nuevoModelo: () => ({ nombre: '', cI_NIT: '', telefono: '', email: '', direccion: '', emprendimientoId: empDefecto.value }),
     campos: [
       { campo: 'nombre', etiqueta: 'Nombre', tipo: 'text', requerido: true },
       { campo: 'cI_NIT', etiqueta: 'CI / NIT', tipo: 'text' },
       { campo: 'telefono', etiqueta: 'Teléfono', tipo: 'text' },
       { campo: 'email', etiqueta: 'Email', tipo: 'text' },
+      { campo: 'direccion', etiqueta: 'Dirección', tipo: 'text' },
       { campo: 'emprendimientoId', etiqueta: 'Emprendimiento', tipo: 'select', opciones: opEmpren.value, ocultarEnTabla: true },
     ],
   },
@@ -187,7 +206,18 @@ const esModuloCustom = computed(() =>
 
 const inicialUsuario = computed(() => (store.usuario?.nombre || 'A').charAt(0).toUpperCase());
 
-onMounted(cargarReferencias);
+// Etiqueta del rol que se muestra abajo y en el avatar.
+const etiquetaRol = computed(() => store.rolNombre || 'Administrador');
+
+onMounted(() => {
+  cargarReferencias();
+  // Si por algun motivo el modulo actual no esta permitido, caemos al primero
+  // que si lo este (el primer item del menu ya filtrado).
+  if (!puedeVer(modulo.value)) {
+    const primero = menu.value[0]?.items[0]?.clave;
+    if (primero) modulo.value = primero;
+  }
+});
 </script>
 
 <template>
@@ -221,7 +251,7 @@ onMounted(cargarReferencias);
         <div class="avatar">{{ inicialUsuario }}</div>
         <div>
           <strong class="chico">{{ store.usuario?.nombre || 'Administrador' }}</strong>
-          <div class="gris chico">Administrador</div>
+          <div class="gris chico">{{ etiquetaRol }}</div>
         </div>
       </div>
     </aside>
@@ -231,7 +261,7 @@ onMounted(cargarReferencias);
       <header class="topbar">
         <div class="titulo-top">{{ configActual ? configActual.titulo : 'Panadería Kiataque' }}</div>
         <div class="fila derecha-top">
-          <button class="btn btn-linea btn-mini" @click="modulo = 'ventas'">+ Venta</button>
+          <button v-if="puedeVer('ventas')" class="btn btn-linea btn-mini" @click="modulo = 'ventas'">+ Venta</button>
           <button class="btn btn-linea btn-mini" @click="store.cerrarSesion()">Cerrar sesión</button>
           <div class="avatar chico-avatar">{{ inicialUsuario }}</div>
         </div>

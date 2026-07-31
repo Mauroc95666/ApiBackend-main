@@ -1,0 +1,73 @@
+
+services:
+
+  # ---------- 1) Base de datos SQL Server ----------
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: kiataque-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${SA_PASSWORD}
+      MSSQL_PID: "Developer"
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql        # volumen -> los datos persisten
+    networks:
+      - kiataque-net
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  # ---------- 2) Inicialización de la base (crea tablas + datos) ----------
+  db-init:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: kiataque-db-init
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    environment:
+      SA_PASSWORD: ${SA_PASSWORD}
+    volumes:
+      - ./db:/db:ro
+    networks:
+      - kiataque-net
+    entrypoint: ["/bin/bash", "-c", "/opt/mssql-tools18/bin/sqlcmd -S sqlserver -U sa -P \"$$SA_PASSWORD\" -C -b -i /db/init.sql"]
+    restart: "no"
+
+  # ---------- 3) Backend (ASP.NET Core Web API) ----------
+  backend:
+    build: ./BackendApi
+    container_name: kiataque-backend
+    depends_on:
+      db-init:
+        condition: service_completed_successfully
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "http://+:8080"
+      ConnectionStrings__ConexionDB: "Server=sqlserver,1433;Database=DB_Panaderia2;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;"
+    ports:
+      - "8080:8080"
+    networks:
+      - kiataque-net
+
+  # ---------- 4) Frontend (Vue compilado + nginx) ----------
+  frontend:
+    build: ./FrontendVue
+    container_name: kiataque-frontend
+    depends_on:
+      - backend
+    ports:
+      - "5173:80"
+    networks:
+      - kiataque-net
+
+networks:
+  kiataque-net:
+    driver: bridge
+
+volumes:
+  mssql_data:

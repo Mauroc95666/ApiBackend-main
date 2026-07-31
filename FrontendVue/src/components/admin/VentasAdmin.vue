@@ -20,6 +20,12 @@ const metodoId = ref(null);
 const sucursalId = ref(null);
 const confirmando = ref(false);
 
+// Fecha de la venta. Por defecto es hoy, pero se puede registrar una venta
+// de dias anteriores (ej: cargar ventas atrasadas). Nunca se permite una
+// fecha futura porque ensuciaria los reportes y el panel.
+const hoyStr = new Date().toISOString().slice(0, 10);
+const fechaVenta = ref(hoyStr);
+
 async function cargar() {
   cargando.value = true;
   error.value = '';
@@ -54,36 +60,74 @@ const productosFiltrados = computed(() =>
 );
 
 function agregar(p) {
+  // Precio seguro: si el producto no tiene precio valido, lo tomamos como 0
+  // en vez de dejar que se cuele un NaN al total.
+  const precio = Number(p.precio);
   const item = carrito.value.find((i) => i.productoId === p.id);
   if (item) item.cantidad++;
-  else carrito.value.push({ productoId: p.id, nombre: p.nombre, precio: Number(p.precio), cantidad: 1 });
+  else carrito.value.push({ productoId: p.id, nombre: p.nombre, precio: isNaN(precio) ? 0 : precio, cantidad: 1 });
 }
 function cambiar(item, delta) {
   item.cantidad += delta;
+  // Tope de seguridad para no cargar cantidades absurdas por error.
+  if (item.cantidad > 9999) item.cantidad = 9999;
   if (item.cantidad <= 0) carrito.value = carrito.value.filter((i) => i !== item);
 }
 
 const total = computed(() => carrito.value.reduce((s, i) => s + i.precio * i.cantidad, 0));
 
 async function confirmar() {
+  error.value = '';
+  ok.value = '';
+
   if (carrito.value.length === 0) {
     error.value = 'Agregá al menos un producto.';
     return;
   }
+  // Validamos que existan los datos obligatorios en vez de mandar un id "1"
+  // inventado que podria no existir y romper la venta con un error del servidor.
+  const usuarioId = store.usuario?.id;
+  if (!usuarioId) {
+    error.value = 'No hay un usuario en sesión para registrar la venta.';
+    return;
+  }
+  if (!sucursalId.value) {
+    error.value = 'Elegí una sucursal. Si no hay ninguna, creá una primero.';
+    return;
+  }
+  if (!clienteId.value) {
+    error.value = 'Elegí un cliente. Si no hay ninguno, creá uno primero.';
+    return;
+  }
+  if (!metodoId.value) {
+    error.value = 'Elegí un método de pago. Si no hay ninguno, creá uno (ej: Efectivo).';
+    return;
+  }
+  // La fecha no puede ser futura (sí puede ser de días anteriores).
+  if (fechaVenta.value > hoyStr) {
+    error.value = 'La fecha de la venta no puede ser posterior a hoy.';
+    return;
+  }
+  if (total.value <= 0) {
+    error.value = 'El total de la venta debe ser mayor a 0.';
+    return;
+  }
+
   confirmando.value = true;
-  error.value = '';
   try {
     const cuerpo = {
-      sucursalId: Number(sucursalId.value) || 1,
-      clienteId: Number(clienteId.value) || 1,
-      usuarioId: store.usuario?.id || 1,
-      metodoPagoId: Number(metodoId.value) || 1,
-      fecha: new Date().toISOString(),
+      sucursalId: Number(sucursalId.value),
+      clienteId: Number(clienteId.value),
+      usuarioId: Number(usuarioId),
+      metodoPagoId: Number(metodoId.value),
+      // Usamos las 12:00 del día elegido para que la zona horaria no lo corra al día anterior.
+      fecha: new Date(fechaVenta.value + 'T12:00:00').toISOString(),
       total: total.value,
     };
     await api.post('/ventas', cuerpo);
     ok.value = 'Venta registrada por Bs ' + total.value.toFixed(2) + '.';
     carrito.value = [];
+    fechaVenta.value = hoyStr;
     await cargar();
   } catch (e) {
     error.value = e?.response?.data?.mensaje || 'No se pudo registrar la venta.';
@@ -129,6 +173,9 @@ onMounted(cargar);
       <!-- Detalle -->
       <aside class="pos-detalle">
         <h3>Detalle de la venta</h3>
+
+        <label>Fecha de la venta</label>
+        <input type="date" v-model="fechaVenta" :max="hoyStr" />
 
         <label>Cliente</label>
         <select v-model="clienteId">

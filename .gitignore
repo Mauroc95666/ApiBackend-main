@@ -1,0 +1,8 @@
+# No subir el archivo de variables real (credenciales)
+.env
+
+# Artefactos de compilación
+**/bin/
+**/obj/
+**/node_modules/
+**/dist/

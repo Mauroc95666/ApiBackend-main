@@ -22,6 +22,7 @@ function nuevo() {
     categoriaId: null,
     proveedorId: null,
     emprendimientoId: 1,
+    imagenUrl: '',
   };
 }
 
@@ -66,14 +67,32 @@ function abrirEditar(p) {
 }
 
 async function guardar() {
-  guardando.value = true;
   error.value = '';
+  // Validamos los numeros antes de guardar: nada de precios/stock negativos
+  // ni valores vacios que lleguen como texto y rompan la base.
+  const precio = Number(form.value.precio);
+  const stock = Number(form.value.stock);
+  if (!form.value.nombre || !form.value.nombre.trim()) {
+    error.value = 'Poné un nombre al producto.';
+    return;
+  }
+  if (isNaN(precio) || precio < 0) {
+    error.value = 'El precio tiene que ser un número mayor o igual a 0.';
+    return;
+  }
+  if (isNaN(stock) || stock < 0) {
+    error.value = 'El stock tiene que ser un número mayor o igual a 0.';
+    return;
+  }
+  guardando.value = true;
   try {
     // aseguramos que los numeros vayan como numeros
     const cuerpo = {
       ...form.value,
-      precio: Number(form.value.precio),
-      stock: Number(form.value.stock),
+      nombre: form.value.nombre.trim(),
+      precio,
+      stock,
+      imagenUrl: (form.value.imagenUrl || '').trim() || null,
     };
     if (editandoId.value) {
       await api.put('/productos/' + editandoId.value, cuerpo);
@@ -145,7 +164,10 @@ onMounted(cargar);
     <!-- Tarjetas de producto -->
     <div class="grilla">
       <div v-for="p in productosFiltrados" :key="p.id" class="prod">
-        <div class="prod-foto">Foto del producto</div>
+        <div class="prod-foto">
+          <img v-if="p.imagenUrl" :src="p.imagenUrl" :alt="p.nombre" class="img-prod" />
+          <span v-else>Foto del producto</span>
+        </div>
         <div class="prod-cuerpo">
           <div class="fila entre">
             <h3>{{ p.nombre }}</h3>
@@ -172,6 +194,13 @@ onMounted(cargar);
           <div class="campo-form">
             <label>Nombre</label>
             <input v-model="form.nombre" required placeholder="Ej: Cuñapé" />
+          </div>
+          <div class="campo-form">
+            <label>Imagen (URL)</label>
+            <input v-model="form.imagenUrl" placeholder="https://... (pegá el enlace de la foto)" />
+            <div v-if="form.imagenUrl" class="previa">
+              <img :src="form.imagenUrl" alt="Vista previa" />
+            </div>
           </div>
           <div class="campo-form">
             <label>Categoría</label>
@@ -251,7 +280,11 @@ onMounted(cargar);
   justify-content: center;
   color: #c2a888;
   font-size: 13px;
+  overflow: hidden;
 }
+.img-prod { width: 100%; height: 100%; object-fit: cover; }
+.previa { margin-top: 8px; }
+.previa img { max-height: 120px; border-radius: 6px; border: 1px solid var(--linea); }
 
 .prod-cuerpo { padding: 14px; }
 .prod-cuerpo h3 { font-size: 16px; }
