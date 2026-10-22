@@ -1,4 +1,4 @@
-# 🍞 gestion-panaderiakiataque-vue
+# 🍞 gestion-panaderiakiataque-vue !
 
 Este repositorio contiene la plataforma web desarrollada con **Vue 3** y **Vite** diseñada para digitalizar y optimizar la gestión operativa de la **Panadería Kiataque**, junto con las pruebas del servicio API RESTful en **.NET 7 Web API**.
 
