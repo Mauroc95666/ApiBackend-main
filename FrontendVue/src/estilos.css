@@ -1,0 +1,249 @@
+/* =========================================================
+   Estilos generales - Panadería Kiataque
+   Paleta sacada del mockup (cafe / crema / caramelo)
+   ========================================================= */
+
+:root {
+  --cafe-oscuro: #3a2318;
+  --cafe-panel: #34211a;
+  --caramelo: #bf7d2c;
+  --caramelo-hover: #a86c22;
+  --crema: #fbf6ee;
+  --crema-2: #f4ead9;
+  --texto: #3a2a1e;
+  --texto-suave: #8a7360;
+  --linea: #e7dccb;
+  --rojo: #b5432a;
+  --verde: #4e7d3f;
+  --ambar: #c58a2a;
+  --blanco: #ffffff;
+  --sombra: 0 2px 10px rgba(58, 35, 24, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #app {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Verdana, sans-serif;
+  color: var(--texto);
+  background: var(--crema);
+  font-size: 15px;
+}
+
+a {
+  color: var(--caramelo);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+h1, h2, h3, h4 {
+  margin: 0 0 8px 0;
+  color: var(--cafe-oscuro);
+}
+
+/* ---------- Botones ---------- */
+.btn {
+  border: none;
+  border-radius: 6px;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s, transform 0.05s;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-principal {
+  background: var(--caramelo);
+  color: #fff;
+}
+
+.btn-principal:hover {
+  background: var(--caramelo-hover);
+}
+
+.btn-linea {
+  background: transparent;
+  color: var(--cafe-oscuro);
+  border: 1px solid var(--linea);
+}
+
+.btn-linea:hover {
+  background: var(--crema-2);
+}
+
+.btn-peligro {
+  background: transparent;
+  color: var(--rojo);
+  border: 1px solid #e6c3ba;
+}
+
+.btn-peligro:hover {
+  background: #fbeae6;
+}
+
+.btn-mini {
+  padding: 6px 12px;
+  font-size: 13px;
+}
+
+button:focus-visible, input[type="button"]:focus-visible, input[type="submit"]:focus-visible, input[type="reset"]:focus-visible {
+  outline: 3px solid var(--caramelo);
+  outline-offset: 2px;
+}
+
+/* ---------- Inputs ---------- */
+input, select, textarea {
+  font-family: inherit;
+  font-size: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--linea);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--texto);
+  width: 100%;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--caramelo);
+}
+
+label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  color: var(--texto-suave);
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+/* ---------- Tarjetas ---------- */
+.tarjeta {
+  background: #fff;
+  border: 1px solid var(--linea);
+  border-radius: 10px;
+  padding: 18px;
+  box-shadow: var(--sombra);
+}
+
+/* ---------- Tabla ---------- */
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+.tabla th {
+  text-align: left;
+  font-size: 13px;
+  color: var(--texto-suave);
+  border-bottom: 2px solid var(--linea);
+  padding: 12px 10px;
+}
+
+.tabla td {
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--linea);
+  font-size: 14px;
+}
+
+.tabla tr:hover td {
+  background: #fcf8f1;
+}
+
+/* ---------- Etiquetas de estado ---------- */
+.etiqueta {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.et-critico { background: var(--rojo); }
+.et-bajo { background: var(--ambar); }
+.et-ok { background: var(--verde); }
+.et-nuevo { background: var(--rojo); }
+.et-confirmado { background: var(--caramelo); }
+.et-prep { background: #6b4423; }
+.et-listo { background: var(--verde); }
+
+/* ---------- Modal ---------- */
+.fondo-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(40, 24, 15, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 20px;
+}
+
+.caja-modal {
+  background: #fff;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 480px;
+  padding: 24px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* ---------- Utilidades ---------- */
+.fila {
+  display: flex;
+  gap: 14px;
+}
+
+.entre {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.gris {
+  color: var(--texto-suave);
+}
+
+.cargando {
+  color: var(--texto-suave);
+  padding: 20px;
+}
+
+.mensaje-error {
+  background: #fbeae6;
+  color: var(--rojo);
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.mensaje-ok {
+  background: #eaf3e6;
+  color: var(--verde);
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 12px;
+}

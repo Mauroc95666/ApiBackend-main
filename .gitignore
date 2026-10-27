@@ -1,0 +1,16 @@
+# No subir el archivo de variables real (credenciales)
+.env
+
+# Artefactos de compilación
+**/bin/
+**/obj/
+**/node_modules/
+**/dist/
+
+# Respaldos de la base: se generan en cada maquina, no se suben al repositorio
+db/respaldos/*.bak
+
+# Copias de respaldo que se fueron haciendo mientras se editaba el codigo
+*.bak-*
+*.bak2-*
+*.bak3-*

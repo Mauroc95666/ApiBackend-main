@@ -1,0 +1,91 @@
+
+services:
+
+  # ---------- 1) Base de datos SQL Server ----------
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: kiataque-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${SA_PASSWORD}
+      MSSQL_PID: "Developer"
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql        # volumen -> los datos persisten
+      # Carpeta de respaldos. Va al disco del host a proposito: si el volumen
+      # mssql_data se borra o se corrompe, los .bak siguen estando.
+      - ./db/respaldos:/respaldos
+    networks:
+      - kiataque-net
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  # ---------- 2) Inicialización de la base (crea tablas + datos) ----------
+  db-init:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: kiataque-db-init
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    environment:
+      SA_PASSWORD: ${SA_PASSWORD}
+    volumes:
+      - ./db:/db:ro
+    networks:
+      - kiataque-net
+    entrypoint: ["/bin/bash", "-c", "/opt/mssql-tools18/bin/sqlcmd -S sqlserver -U sa -P \"$$SA_PASSWORD\" -C -b -i /db/init.sql"]
+    restart: "no"
+
+  # ---------- 3) Backend (ASP.NET Core Web API) ----------
+  backend:
+    build: ./BackendApi
+    container_name: kiataque-backend
+    depends_on:
+      db-init:
+        condition: service_completed_successfully
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "http://+:8080"
+      ConnectionStrings__ConexionDB: "Server=sqlserver,1433;Database=DB_Panaderia2;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;"
+      # Clave del super-usuario y clave con la que se firman los tokens de
+      # sesion. Las dos salen del archivo .env, que no se sube a GitHub.
+      Seguridad__ClaveSuperadmin: "${SUPERADMIN_PASSWORD:-}"
+      Seguridad__ClaveToken: "${TOKEN_SECRET:-}"
+      # Meta de minutos para entregar un pedido. Por defecto 30; el Product
+      # Owner tiene que confirmar el valor definitivo.
+      Pedidos__MetaMinutos: "${META_MINUTOS_PEDIDO:-30}"
+      # Respaldos: carpeta compartida con el motor, cada cuantas horas corre el
+      # respaldo automatico (0 lo desactiva) y cuantos se conservan.
+      Respaldos__Carpeta: "/respaldos"
+      Respaldos__CadaHoras: "${RESPALDO_CADA_HORAS:-24}"
+      Respaldos__Conservar: "${RESPALDOS_A_CONSERVAR:-10}"
+    volumes:
+      # La misma carpeta que ve el motor, para poder listar y descargar los .bak.
+      - ./db/respaldos:/respaldos
+    ports:
+      - "8080:8080"
+    networks:
+      - kiataque-net
+
+  # ---------- 4) Frontend (Vue compilado + nginx) ----------
+  frontend:
+    build: ./FrontendVue
+    container_name: kiataque-frontend
+    depends_on:
+      - backend
+    ports:
+      - "5173:80"
+    networks:
+      - kiataque-net
+
+networks:
+  kiataque-net:
+    driver: bridge
+
+volumes:
+  mssql_data:

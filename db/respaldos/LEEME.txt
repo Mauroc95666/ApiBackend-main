@@ -1,0 +1,3 @@
+Esta carpeta guarda los respaldos (.bak) de la base de datos.
+Los genera el sistema desde el panel (Respaldos) y la tarea automatica del
+backend. Los archivos no se suben al repositorio.
